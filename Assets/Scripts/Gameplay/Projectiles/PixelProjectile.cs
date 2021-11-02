@@ -1,3 +1,4 @@
+using GizmoLab.Gameplay.Damagables;
 using UnityEngine;
 
 namespace GizmoLab.Gameplay.Projectiles
@@ -54,6 +55,13 @@ namespace GizmoLab.Gameplay.Projectiles
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            var damagable = other.GetComponent<IDamagable>();
+
+            if (damagable == null)
+                return;
+
+            damagable.Damage(_damageToApply, _direction);
+            Destroy(gameObject);
         }
 
         private void ValidateMaxDistance()

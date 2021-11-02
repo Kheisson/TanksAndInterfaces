@@ -1,9 +1,18 @@
-﻿using UnityEngine;
+﻿using System;
+using Gameplay.Indicators;
+using GizmoLab.Gameplay.Damagables;
+using UnityEngine;
 
 namespace GizmoLab.Gameplay.Components
 {
-    public class RecoverableHealthComponent : MonoBehaviour
+    public class RecoverableHealthComponent : MonoBehaviour, IDamagable, IHealthIndicatorTarget
     {
+        #region Events
+
+        public event Action BeforeDestroy; 
+        
+        #endregion
+        
         #region Editor
 
         [SerializeField]
@@ -17,6 +26,9 @@ namespace GizmoLab.Gameplay.Components
         [SerializeField]
         [Range(0.5f, 10f)]
         private float _recoverPeriodInSeconds = 2f;
+        
+        [SerializeField]
+        private Transform _indicatorPivot;
         
         #endregion
 
@@ -37,6 +49,7 @@ namespace GizmoLab.Gameplay.Components
             _health -= damageAmount;
             if (_health <= 0)
             {
+                BeforeDestroy?.Invoke();
                 Destroy(gameObject);
             }
         }
@@ -52,6 +65,8 @@ namespace GizmoLab.Gameplay.Components
 
         public int Health => _health;
 
+        public Vector3 IndicatorPivot => _indicatorPivot.position;
+        
         #endregion
     }
 }

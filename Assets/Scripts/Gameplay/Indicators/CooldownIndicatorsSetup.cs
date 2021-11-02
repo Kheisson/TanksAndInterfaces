@@ -8,6 +8,9 @@ namespace Gameplay.Indicators
         #region Editor
 
         [SerializeField]
+        private Object _cooldownIndocatorPrefabRef;
+        
+        [SerializeField]
         private RectTransform _parentTransform;
 
         [SerializeField]
@@ -24,6 +27,18 @@ namespace Gameplay.Indicators
 
         private void AddCooldownIndicators()
         {
+            var cooldownIndicatorTargets = FindObjectsOfType<MonoBehaviour>().OfType<ICooldownIndicatorTarget>();
+            foreach (var target in cooldownIndicatorTargets)
+            {
+                var cooldownIndicator = CreateCooldownIndicator();
+                cooldownIndicator.Attach(target, _transformationCamera);
+            }
+        }
+
+        private CooldownIndicator CreateCooldownIndicator()
+        {
+            var indicatorInstance = (GameObject)Instantiate(_cooldownIndocatorPrefabRef, _parentTransform);
+            return indicatorInstance.GetComponent<CooldownIndicator>();
         }
 
         #endregion

@@ -8,6 +8,9 @@ namespace Gameplay.Indicators
         #region Editor
 
         [SerializeField]
+        private Object _healthIndicatorPrefabRef;
+        
+        [SerializeField]
         private RectTransform _parentTransform;
 
         [SerializeField]
@@ -24,6 +27,18 @@ namespace Gameplay.Indicators
 
         private void AddHealthIndicators()
         {
+            var healthIndicatorTargets = FindObjectsOfType<MonoBehaviour>().OfType<IHealthIndicatorTarget>();
+            foreach (var target in healthIndicatorTargets)
+            {
+                var healthIndicator = CreateHealthIndicator();
+                healthIndicator.Attach(target, _transformationCamera);
+            }
+        }
+
+        private HealthIndicator CreateHealthIndicator()
+        {
+            var indicatorInstance = (GameObject)Instantiate(_healthIndicatorPrefabRef, _parentTransform);
+            return indicatorInstance.GetComponent<HealthIndicator>();
         }
 
         #endregion
